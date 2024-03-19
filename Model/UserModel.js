@@ -13,7 +13,7 @@ const emailExist = ({ email }) => {
       });
 
       if (UserExist && UserExist.email == email) reject("Email Already exists");
-      console.log(" inside userModel");
+      // console.log(" inside userModel");
       resolve();
     } catch (error) {
       reject(error);
@@ -44,17 +44,20 @@ const register = ({ email, password }) => {
 
 // to find user with email id
 
-const findUserWithEmail = ({email}) => {
+const findUserWithEmail = ({ email} ) => {
+
   return new Promise(async (resolve, reject) => {
     try {
-
-      const userDb = await UserSchema.findOne({
+      const adminDb = await UserSchema.findOne({
         email: { $eq: email },
       });
+      
+   // console.log("this is from adminModel", adminDb)
+      if (adminDb == null) reject("go and first Register with this email");
+      // console.log(userDb);
 
-      if (userDb == null) reject("go and first Register with this email");
-      console.log(userDb);
-      resolve(userDb);
+    
+      resolve(adminDb);
     } catch (error) {
       reject(error);
     }
