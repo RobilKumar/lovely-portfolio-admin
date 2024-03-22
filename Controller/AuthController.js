@@ -1,7 +1,12 @@
 // express is require here to have router
 const express = require("express");
-// for reset-password
 
+
+
+const { ObjectId } = require('mongodb');
+
+// for reset-password
+const mongoose= require('mongoose')
 const {
   validateRegisterData,
   sendPasswordResetEmail,
@@ -19,7 +24,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { AuthenticateToken } = require("../MiddleWare/TokenMiddleware");
-const { homeDataUpdate, takeData } = require("../Model/HomeModel");
+const { homeDataUpdate, takeData, aboutDataUpdate } = require("../Model/HomeModel");
 const { isError } = require("util");
 
 // imports
@@ -101,9 +106,112 @@ AuthRouter.post("/login", async (req, res) => {
   }
 });
 
+// forgot password
+
+AuthRouter.post("/forgot-password", async (req, res) => {
+  const adminEmail = req.body.email;
+  // console.log( typeof(adminEmail));
+
+  try {
+    // find admin by email
+    const adminDb = await findUserWithEmail({ email: adminEmail });
+
+    // Generate a random token for password reset
+    //const resetToken = crypto.randomBytes(20).toString("hex");
+    // console.log(resetToken);
+    // Generate a random OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // save this in db
+    // adminDb.resetPasswordToken = resetToken;
+    // adminDb.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
+    adminDb.otp = otp;
+    await adminDb.save();
+    // console.log(adminDb);
+    return res.send({
+      status: 201,
+      message: "OTP has been sent",
+      otp: otp,
+    });
+
+    // try {
+    //   await sendPasswordResetEmail(adminEmail, resetToken, otp);
+    //   return res.send({
+    //     status: 200,
+    //     message: "Password reset email ",
+    //   });
+    // } catch (error) {
+    //   return res.send({
+    //     status: 500,
+    //     message: "Internal server error",
+    //     error: error,
+    //   });
+    // }
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: "Database error",
+      error: error,
+    });
+  }
+});
+
+// otp verify
+AuthRouter.post("/otp-verify", async (req, res) => {
+  const { email, otp } = req.body;
+  // console.log(email, otp);
+
+  try {
+    const adminDb = await findUserWithEmail({ email });
+
+    //  console.log("this is from otp-verify", adminDb.otp);
+
+    if (otp !== adminDb.otp) {
+      return res.send("otp doesn't matched ");
+    }
+    res.send({
+      status: 201,
+      message: "otp verified",
+    });
+  } catch (error) {
+    return res.send({
+      status: 500,
+      message: "Database error",
+    });
+  }
+});
+
+// reset-password
+AuthRouter.post("/reset-password", async (req, res) => {
+  const { password, email } = req.body;
+  // console.log(req.body);
+  // console.log(req.body.otp);
+
+  try {
+    const adminDb = await resetPassword({
+      password,
+      email,
+    });
+
+    // console.log("this is from authcontroller", adminDb);
+    return res.send({
+      status: 201,
+      message: "password reset successfully",
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: "Database error",
+      error: error,
+    });
+  }
+});
+
 AuthRouter.put("/home", AuthenticateToken, async (req, res) => {
   const dataToHome = req.body.Description;
   const adminId = req.user.id;
+  
+ 
   //  console.log("userid this" ,userId);
   try {
     const homeData = await homeDataUpdate({ dataToHome, adminId });
@@ -120,17 +228,18 @@ AuthRouter.put("/home", AuthenticateToken, async (req, res) => {
   }
 });
 
-// get home-data 
+// get home-data
 
 AuthRouter.get("/home", AuthenticateToken, async (req, res) => {
   const adminId = req.user.id;
-  console.log("this is adminid", adminId);
+  // console.log("this is adminid", adminId);
 
   try {
     const homeData = await takeData({ adminId });
+
     res.send({
       status: 201,
-      data: homeData,
+      data: homeData.Description,
     });
   } catch (error) {
     res.send({
@@ -141,70 +250,48 @@ AuthRouter.get("/home", AuthenticateToken, async (req, res) => {
   }
 });
 
-// forgot password
+AuthRouter.patch("/about", AuthenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId)
+  const AboutData = req.body;
+  //const objectId =  ObjectId(userId);
 
-AuthRouter.post("/forgot-password", async (req, res) => {
-  const adminEmail = req.body.email;
-  // console.log( typeof(adminEmail));
-
-  try {
-    // find admin by email
-    const adminDb = await findUserWithEmail({ email: adminEmail });
-
-    // Generate a random token for password reset
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    console.log(resetToken);
-    // Generate a random OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // save this in db
-    adminDb.resetPasswordToken = resetToken;
-    adminDb.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
-    adminDb.otp = otp;
-    await adminDb.save();
-
-    try {
-      await sendPasswordResetEmail(adminEmail, resetToken, otp);
-      return res.send({
-        status: 200,
-        message: "Password reset email ",
-      });
-    } catch (error) {
-      return res.send({
-        status: 500,
-        message: "Internal server error",
-        error: error,
-      });
-    }
-  } catch (error) {
-    res.send({
-      status: 500,
-      message: "Database error",
-      error: error,
-    });
-  }
-});
+ 
 
 
-// reset-password
-AuthRouter.post("/reset-password", async (req, res) => {
-  const { resetPasswordToken, otp, password, email } = req.body;
-  // console.log(req.body);
-  console.log(req.body.otp);
+  //var objectId =  mongoose.Types.ObjectId.createFromHexString(userId)
+ 
+ // var objectId = mongoose.mongo.BSONPure.ObjectID.fromHexString(userId)
+  //const objectId =  mongoose.Types.ObjectId(userId);
+
+  
 
   try {
-    const adminDb = await resetPassword({
-      resetPasswordToken,
-      otp,
-      password,
-      email,
-    });
-
-    console.log("this is from authcontroller",adminDb)
-   return  res.send({
+    const aboutDatas = await aboutDataUpdate(userId, AboutData);
+    return res.send({
       status: 201,
-      message: "password reset successfully",
-      data: adminDb,
+      message: "data successfully saved",
+      // data: homeData,
+    });
+  } catch (error) {
+    res.send({
+      status: 500,
+      message: "Database error",
+      error:error
+    });
+  }
+});
+
+AuthRouter.get("/about", AuthenticateToken, async (req, res) => {
+  const adminId = req.user.id;
+  // console.log("this is adminid", adminId);
+
+  try {
+    const homeData = await takeData( {adminId} );
+
+    res.send({
+      status: 201,
+      data: homeData.AboutData,
     });
   } catch (error) {
     res.send({
@@ -214,5 +301,7 @@ AuthRouter.post("/reset-password", async (req, res) => {
     });
   }
 });
+
+
 
 module.exports = AuthRouter;

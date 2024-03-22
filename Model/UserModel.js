@@ -44,8 +44,8 @@ const register = ({ email, password }) => {
 
 // to find user with email id
 
-const findUserWithEmail = ({ email} ) => {
-
+const findUserWithEmail = ( {email} ) => {
+  //console.log("find User with email", email);
   return new Promise(async (resolve, reject) => {
     try {
       const adminDb = await UserSchema.findOne({

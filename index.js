@@ -7,6 +7,7 @@ const cors = require("cors");
 const PORT = process.env.PORT;
 require("./db");
 const Authrouter = require("./Controller/AuthController");
+const AdminRouter = require("./Routes/Admin");
 
 // constant
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json()); // to read json
 // here those req come with auth
 // will be redirected to Authrouter controller
 app.use("/auth", Authrouter);
+app.use("/admin", AdminRouter);
 
 app.listen(PORT, () => {
   console.log(

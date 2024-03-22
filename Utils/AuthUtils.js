@@ -3,6 +3,7 @@ const UserSchema = require("../Schema/UserSchema");
 require("dotenv").config();
 
 const bcrypt = require("bcrypt");
+const { findUserWithEmail } = require("../Model/UserModel");
 function isValidEmail(email) {
   // Regular expression for validating email addresses
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,25 +60,27 @@ const sendPasswordResetEmail = async (email, token, otp) => {
   }
 };
 
-const resetPassword = ({ resetPasswordToken,otp,  password,email }) => {
-    console.log( resetPasswordToken)
-    console.log(  password)
-    console.log(  otp)
-  
+const resetPassword = ({ password, email }) => {
   return new Promise(async (resolve, reject) => {
     try {
-        
-      const adminDb = await UserSchema.findOne({
-        resetPasswordToken: resetPasswordToken,
-        resetPasswordExpires: { $gt: Date.now() },
-        otp: otp,
-      });
-      console.log("th9is is form old admin ",adminDb);
-    //   if (!adminDb) {
-    //     return res
-    //       .status(400)
-    //       .json({ message: "Invalid or expired token or OTP" });
-    //   }
+      // const adminDb = await UserSchema.findOne({
+      //   resetPasswordToken: resetPasswordToken,
+      //   resetPasswordExpires: { $gt: Date.now() },
+      //   otp: otp,
+      // });
+
+      const adminDb = await findUserWithEmail({ email });
+
+      // const adminDb= await UserSchema.findOne({
+      //   email:{$eq:email}
+      // })
+
+      //console.log("th9is is form old admin ", adminDb);
+      //   if (!adminDb) {
+      //     return res
+      //       .status(400)
+      //       .json({ message: "Invalid or expired token or OTP" });
+      //   }
 
       // update admin userpassword
 
@@ -89,18 +92,17 @@ const resetPassword = ({ resetPasswordToken,otp,  password,email }) => {
       );
 
       adminDb.password = hashedPassword;
-      adminDb.resetPasswordToken = null;
-      adminDb.resetPasswordExpires = null;
-      adminDb.otp = null;
+      // adminDb.resetPasswordToken = null;
+      // adminDb.resetPasswordExpires = null;
+     // adminDb.otp = otp;
 
-     // const newAdminDb = await adminDb.save();
+      await adminDb.save();
 
-   
-    //   res.send({
-    //     status: 200,
-    //     message: "password reset successfully",
-    //   });
-      console.log("th9is is form new admin ", adminDb);
+      //   res.send({
+      //     status: 200,
+      //     message: "password reset successfully",
+      //   });
+      //  console.log("th9is is form new admin ", adminDb);
       resolve(adminDb);
     } catch (error) {
       reject(error);
