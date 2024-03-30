@@ -5,6 +5,8 @@ const AdminController = require("../Controller/AdminController");
 const AdminRouter = express.Router();
 //==========>multer uses to upload diffrent form of file=================================>
 const multer = require("multer");
+const SkillController = require("../Controller/SkillController");
+const ExperienceController = require("../Controller/ExperienceController");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "/admin-backend/uploads");
@@ -14,39 +16,48 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({  storage });
+const upload = multer({ storage });
 //==========>till this=================================>
 AdminRouter.post(
   "/add-project",
- AuthenticateToken,
+  AuthenticateToken,
   AdminController().addProject
 );
 
-
 AdminRouter.get(
   "/getAll-project",
- AuthenticateToken,
+  AuthenticateToken,
   AdminController().getAllProject
 );
 
-
 AdminRouter.get(
   "/get-project",
- AuthenticateToken,
+  AuthenticateToken,
   AdminController().getUserProject
 );
 
 AdminRouter.patch(
   "/update-project",
- AuthenticateToken,
+  AuthenticateToken,
   AdminController().updateProject
 );
 
 AdminRouter.delete(
   "/delete-project",
- AuthenticateToken,
+  AuthenticateToken,
   AdminController().deleteProject
 );
+
+AdminRouter.post("/add-skill",AuthenticateToken,SkillController().AddSkill);
+AdminRouter.patch("/update-skill",AuthenticateToken,SkillController().updateSkill);
+AdminRouter.delete("/delete-skill",AuthenticateToken,SkillController().deleteSkill);
+
+// <==================Experience crud======================>
+
+AdminRouter.post("/add-exp",AuthenticateToken,ExperienceController().addExperience);
+AdminRouter.patch("/update-exp",AuthenticateToken,ExperienceController().updateExperience);
+AdminRouter.get("/getAll-exp",AuthenticateToken,ExperienceController().getAllExperience);
+AdminRouter.delete("/delete-exp",AuthenticateToken,ExperienceController().deleteExperience);
 
 
 module.exports = AdminRouter;

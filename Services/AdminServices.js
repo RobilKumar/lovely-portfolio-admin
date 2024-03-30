@@ -59,12 +59,20 @@ module.exports = () => {
   };
 
   const deleteProject = (projectId) => {
-      return new Promise(async(resolve,reject)=>{
-     await ProjectSchema.deleteOne({_id:projectId}).then(resolve).catch(reject);
-        //console.log(deleteDb)
-       // deleteDb.then(resolve).catch(reject)
-      })
+    return new Promise(async (resolve, reject) => {
+      await ProjectSchema.deleteOne({ _id: projectId })
+        .then(resolve)
+        .catch(reject);
+      //console.log(deleteDb)
+      // deleteDb.then(resolve).catch(reject)
+    });
   };
 
-  return { createProject, getAllProject, getUserProject, updateProject,deleteProject };
+  return {
+    createProject,
+    getAllProject,
+    getUserProject,
+    updateProject,
+    deleteProject,
+  };
 };

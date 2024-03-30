@@ -36,7 +36,7 @@ module.exports = () => {
   const getUserProject = async (req, res) => {
     // console.log(req.user.id)
     const userId = req.user.id;
-    console.log(typeof userId);
+   // console.log(typeof userId);
     try {
       let ProjectDb = await AdminServices().getUserProject(userId);
       console.log("all good till here");
