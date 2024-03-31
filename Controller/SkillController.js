@@ -22,12 +22,20 @@ module.exports = () => {
     });
   };
 
+  const getAllSkill=async(req,res)=>{
+
+    const skillDb= await SkillService().getAllSkill();
+    if(!skillDb) return res.status(500).json({message:"Internal server error"})
+    return res.status(200).json({Data:skillDb});
+  }
+
   const updateSkill = async (req, res) => {
-    let userId = req.user.id;
-    console.log(req.body);
+    //let userId = req.user.id;
+    //console.log(req.body);
+    const id= req.body._id;
     const Skills = req.body;
 
-    const data = { userId, Skills };
+    const data = { id, Skills };
 
     const updatedSkillDb = SkillService().updateSkill(data);
     if (!updatedSkillDb) res.status(500).json({ message: "Database error" });
@@ -44,7 +52,8 @@ module.exports = () => {
       const id= req.body;
 
       const deleteSkill= await SkillService().deleteSkill(id);
-      if(deleteSkill.deletedCount>0)res.status(204).json({
+     // console.log(deleteSkill,"this is from skill controller deletedSkill ")
+      if(deleteSkill.deletedCount>0)res.status(201).json({
         message:"Deleted successfully"
       })
       else{
@@ -53,5 +62,5 @@ module.exports = () => {
       
   }
 
-  return { AddSkill, updateSkill,deleteSkill };
+  return { AddSkill, updateSkill,deleteSkill,getAllSkill };
 };

@@ -49,6 +49,7 @@ AdminRouter.delete(
 );
 
 AdminRouter.post("/add-skill",AuthenticateToken,SkillController().AddSkill);
+AdminRouter.get("/getAll-skill",AuthenticateToken,SkillController().getAllSkill);
 AdminRouter.patch("/update-skill",AuthenticateToken,SkillController().updateSkill);
 AdminRouter.delete("/delete-skill",AuthenticateToken,SkillController().deleteSkill);
 

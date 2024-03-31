@@ -2,8 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const skillSchema = new Schema({
-  Skills: {
-    type: [{ key: String, value: Number }],
+  Skill: {
+    type: String,
+    default: "",
+  },
+  Value: {
+    type: Number,
+    default: 0,
   },
 });
 

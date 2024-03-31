@@ -35,7 +35,7 @@ module.exports = () => {
     if (deleteDb == null)
       return res.status(400).json({ message: "Id didn't found" });
 
-    return res.status(204).json({ message: "Deleted Successfully", deleteDb });
+    return res.status(201).json({ message: "Deleted Successfully", deleteDb });
   };
 
   return {

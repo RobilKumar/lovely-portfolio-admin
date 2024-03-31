@@ -1,35 +1,47 @@
 const SkillSchema = require("../Schema/SkillSchema");
 
-
 module.exports = () => {
   const createSkill = (data) => {
     const { userId, Skills } = data;
     console.log("skillService===>createSkill");
-    console.log(Skills)
-    const dataFromUser = Skills.skillArray.map((obj) => ({
-      key: obj.key,
-      value: obj.value,
-    }));
-    key = dataFromUser[0].key;
-    value = dataFromUser[0].value;
+    console.log(Skills.Skill);
+    // const dataFromUser = Skills.skillArray.map((obj) => ({
+    //   key: obj.key,
+    //   value: obj.value,
+    // }));
+    // key = dataFromUser[0].key;
+    // value = dataFromUser[0].value;
     // console.log("key"+key+"value"+value);
     return new Promise(async (resolve, reject) => {
       const skillDb = await SkillSchema.create({
-        Skills: [{ key: key, value: value }],
+        Skill: Skills.Skill,
+        Value: Skills.Value,
       });
       console.log(skillDb);
       resolve(skillDb);
     });
   };
 
+  const getAllSkill = () => {
+    console.log("skillService===>getAllSkill");
+    return new Promise(async (resolve, reject) => {
+      await SkillSchema.find({}).then(resolve).catch(reject);
+    });
+  };
+
   const updateSkill = (data) => {
-    const { userId, Skills } = data;
-    const dataFromUser = Skills.Skills.map((obj) => ({
-      key: obj.key,
-      value: obj.value,
-    }));
-    key = dataFromUser[0].key;
-    value = dataFromUser[0].value;
+    console.log("skillService===>updateSkill");
+      const filter={_id:data.id}
+      // console.log(filter);
+      // console.log(data.Skills);
+      
+    //==============different thing===================>
+    // const dataFromUser = Skills.Skills.map((obj) => ({
+    //   key: obj.key,
+    //   value: obj.value,
+    // }));
+    // key = dataFromUser[0].key;
+    // value = dataFromUser[0].value;
 
     // const dataTobeupdated = Skills.Skills;
     // console.log(dataTobeupdated,"datatobeupdated");
@@ -37,12 +49,15 @@ module.exports = () => {
 
     return new Promise(async (resolve, reject) => {
       try {
-        const updatedSkillDb = await SkillSchema.updateOne(
-          // { _id: '6606b84d4c19615cdba86bd4'},
-          { _id: "6606b84d4c19615cdba86bd4" },
-          { $set: { "Skills.$[elem].value": value } },
-          { arrayFilters: [{ "elem.key": { $eq: key } }] }
-        ); // Remove 'value2' from the skills array
+        const updatedSkillDb= await SkillSchema.findByIdAndUpdate(filter, data.Skills,{
+          new: true,
+        });
+        // const updatedSkillDb = await SkillSchema.updateOne(
+        //   // { _id: '6606b84d4c19615cdba86bd4'},
+        //   { _id: "6606b84d4c19615cdba86bd4" },
+        //   { $set: { "Skills.$[elem].value": value } },
+        //   { arrayFilters: [{ "elem.key": { $eq: key } }] }
+        // ); // Remove 'value2' from the skills array
         console.log(updatedSkillDb);
         resolve(updatedSkillDb);
       } catch (error) {
@@ -65,5 +80,5 @@ module.exports = () => {
     });
   };
 
-  return { createSkill, updateSkill, deleteSkill };
+  return { createSkill, updateSkill, deleteSkill, getAllSkill };
 };
