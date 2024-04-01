@@ -35,19 +35,17 @@ module.exports = () => {
 
   const getUserProject = async (req, res) => {
     // console.log(req.user.id)
-    const userId = req.user.id;
-   // console.log(typeof userId);
+    const userId = req.query.id;
+    // console.log(typeof userId);
     try {
       let ProjectDb = await AdminServices().getUserProject(userId);
       console.log("all good till here");
-      if (ProjectDb.length == 0)
-        return res.status(404).json({ message: "project not found" });
+      if (!ProjectDb) return res.status(404).json({ message: "Id not found" });
       res.status(200).json(ProjectDb);
     } catch (error) {
       return res.send({
         status: 500,
-        message: "Database error",
-        error: error,
+        message: "Id not found",
       });
     }
   };
@@ -75,7 +73,8 @@ module.exports = () => {
     try {
       const deleteDb = await AdminServices().deleteProject(projectId);
       console.log(deleteDb);
-      if (deleteDb.deletedCount == 0) return  res.json({ message: "No project found" });
+      if (deleteDb.deletedCount == 0)
+        return res.json({ message: "No project found" });
       res.status(201).json(deleteDb);
     } catch (error) {
       res.status(500).json(error);

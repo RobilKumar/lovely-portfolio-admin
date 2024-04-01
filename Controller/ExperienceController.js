@@ -29,6 +29,17 @@ module.exports = () => {
     return res.status(200).json({ allExpDb });
   };
 
+  const getAExperience = async (req, res) => {
+    const id= req.query.id;
+    const expDb = await ExperienceService().getAExperience(id);
+    if (!expDb)
+      return res
+        .status(500)
+        .json({ message: "internal server error", allExpDb });
+
+    return res.status(200).json({ expDb });
+  };
+
   const deleteExperience = async (req, res) => {
     const id = req.body;
     const deleteDb = await ExperienceService().deleteExperience(id);
@@ -43,5 +54,6 @@ module.exports = () => {
     updateExperience,
     getAllExperience,
     deleteExperience,
+    getAExperience
   };
 };

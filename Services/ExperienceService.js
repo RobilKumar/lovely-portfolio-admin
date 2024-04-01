@@ -29,21 +29,36 @@ module.exports = () => {
     });
   };
 
-
-  const getAllExperience= ()=>{
+  const getAllExperience = () => {
     console.log("getAllExperience=========>ExperienceService");
-    return new Promise(async(resolve,reject)=>{
+    return new Promise(async (resolve, reject) => {
       await ExperienceSchema.find({}).then(resolve).catch(reject);
-    })
-  }
+    });
+  };
 
-  const deleteExperience=(id)=>{
+  const getAExperience = (id) => {
+    console.log("ExperienceService===>getASkill");
+    console.log(id);
+    return new Promise(async (resolve, reject) => {
+      ExperienceSchema.findById(id).then(resolve).catch(reject);
+    });
+  };
+
+  const deleteExperience = (id) => {
     console.log("deleteExperience=========>ExperienceService");
-    let Id= id.id
-    return new Promise(async(resolve,reject)=>{
-      await ExperienceSchema.findByIdAndDelete({_id:Id}).then(resolve).catch(reject);
-    })
-  }
+    let Id = id.id;
+    return new Promise(async (resolve, reject) => {
+      await ExperienceSchema.findByIdAndDelete({ _id: Id })
+        .then(resolve)
+        .catch(reject);
+    });
+  };
 
-  return { addExperience, updateExperience,getAllExperience,deleteExperience};
+  return {
+    addExperience,
+    updateExperience,
+    getAllExperience,
+    deleteExperience,
+    getAExperience
+  };
 };

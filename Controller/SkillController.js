@@ -8,10 +8,9 @@ module.exports = () => {
     // console.log(req.body , "this is from AddSkill controller");
     const Skills = req.body;
 
-   
     //console.log(data[0].value, "this is from AddSkill controller 2");
     // const { skillArray } = req.body;
-     const data = { userId, Skills };
+    const data = { userId, Skills };
 
     const skillDb = await SkillService().createSkill(data);
     // console.log(skillDb, "this is from skillService")
@@ -22,17 +21,27 @@ module.exports = () => {
     });
   };
 
-  const getAllSkill=async(req,res)=>{
+  const getAllSkill = async (req, res) => {
+    const skillDb = await SkillService().getAllSkill();
+    if (!skillDb)
+      return res.status(500).json({ message: "Internal server error" });
+    return res.status(200).json({ Data: skillDb });
+  };
+  const getASkill = async (req, res) => {
+    console.log(req.query.id);
+    const id = req.query.id;
+   console.log(id);
+   
+    const skillDb = await SkillService().getASkill(id);
+    if (!skillDb) return res.status(500).json({ message: "Id not found" });
 
-    const skillDb= await SkillService().getAllSkill();
-    if(!skillDb) return res.status(500).json({message:"Internal server error"})
-    return res.status(200).json({Data:skillDb});
-  }
+    return res.status(200).json({ message: "Successfully get", skillDb });
+  };
 
   const updateSkill = async (req, res) => {
     //let userId = req.user.id;
     //console.log(req.body);
-    const id= req.body._id;
+    const id = req.body._id;
     const Skills = req.body;
 
     const data = { id, Skills };
@@ -47,20 +56,19 @@ module.exports = () => {
     });
   };
 
+  const deleteSkill = async (req, res) => {
+    const id = req.body;
 
-  const deleteSkill= async(req,res)=>{
-      const id= req.body;
+    const deleteSkill = await SkillService().deleteSkill(id);
+    // console.log(deleteSkill,"this is from skill controller deletedSkill ")
+    if (deleteSkill.deletedCount > 0)
+      res.status(201).json({
+        message: "Deleted successfully",
+      });
+    else {
+      res.status(500).json({ message: "Database error" });
+    }
+  };
 
-      const deleteSkill= await SkillService().deleteSkill(id);
-     // console.log(deleteSkill,"this is from skill controller deletedSkill ")
-      if(deleteSkill.deletedCount>0)res.status(201).json({
-        message:"Deleted successfully"
-      })
-      else{
-        res.status(500).json({message:'Database error'})
-      }
-      
-  }
-
-  return { AddSkill, updateSkill,deleteSkill,getAllSkill };
+  return { AddSkill, updateSkill, deleteSkill, getAllSkill,getASkill };
 };

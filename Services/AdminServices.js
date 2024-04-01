@@ -37,7 +37,7 @@ module.exports = () => {
     return new Promise(async (resolve, reject) => {
       try {
         const projectDb = await ProjectSchema.find({
-          userId: userId,
+          _id: userId,
         });
 
         resolve(projectDb);

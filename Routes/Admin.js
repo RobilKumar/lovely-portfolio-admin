@@ -48,17 +48,51 @@ AdminRouter.delete(
   AdminController().deleteProject
 );
 
-AdminRouter.post("/add-skill",AuthenticateToken,SkillController().AddSkill);
-AdminRouter.get("/getAll-skill",AuthenticateToken,SkillController().getAllSkill);
-AdminRouter.patch("/update-skill",AuthenticateToken,SkillController().updateSkill);
-AdminRouter.delete("/delete-skill",AuthenticateToken,SkillController().deleteSkill);
+AdminRouter.post("/add-skill", AuthenticateToken, SkillController().AddSkill);
+AdminRouter.get(
+  "/getAll-skill",
+  AuthenticateToken,
+  SkillController().getAllSkill
+);
+AdminRouter.get("/get-skill", AuthenticateToken, SkillController().getASkill);
+AdminRouter.patch(
+  "/update-skill",
+  AuthenticateToken,
+  SkillController().updateSkill
+);
+AdminRouter.delete(
+  "/delete-skill",
+  AuthenticateToken,
+  SkillController().deleteSkill
+);
 
 // <==================Experience crud======================>
 
-AdminRouter.post("/add-exp",AuthenticateToken,ExperienceController().addExperience);
-AdminRouter.patch("/update-exp",AuthenticateToken,ExperienceController().updateExperience);
-AdminRouter.get("/getAll-exp",AuthenticateToken,ExperienceController().getAllExperience);
-AdminRouter.delete("/delete-exp",AuthenticateToken,ExperienceController().deleteExperience);
+AdminRouter.post(
+  "/add-exp",
+  AuthenticateToken,
+  ExperienceController().addExperience
+);
+AdminRouter.patch(
+  "/update-exp",
+  AuthenticateToken,
+  ExperienceController().updateExperience
+);
+AdminRouter.get(
+  "/getAll-exp",
+  AuthenticateToken,
+  ExperienceController().getAllExperience
+);
 
+AdminRouter.get(
+  "/getA-exp",
+  AuthenticateToken,
+  ExperienceController().getAExperience
+);
+AdminRouter.delete(
+  "/delete-exp",
+  AuthenticateToken,
+  ExperienceController().deleteExperience
+);
 
 module.exports = AdminRouter;

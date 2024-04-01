@@ -29,6 +29,15 @@ module.exports = () => {
     });
   };
 
+  const getASkill=(id)=>{
+
+    console.log("skillService===>getASkill");
+    console.log(id);
+    return new Promise(async(resolve,reject)=>{
+      SkillSchema.findById(id).then(resolve).catch(reject)
+    })
+  }
+
   const updateSkill = (data) => {
     console.log("skillService===>updateSkill");
       const filter={_id:data.id}
@@ -80,5 +89,5 @@ module.exports = () => {
     });
   };
 
-  return { createSkill, updateSkill, deleteSkill, getAllSkill };
+  return { createSkill, updateSkill, deleteSkill, getAllSkill,getASkill };
 };
