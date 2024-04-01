@@ -5,9 +5,10 @@ const AdminServices = require("../Services/AdminServices");
 module.exports = () => {
   const addProject = async (req, res) => {
     let userId = req.user.id;
+    let imagePath= req.file.path;
     let { projectname, title, link, technology } = req.body;
 
-    let data = { userId, projectname, title, link, technology };
+    let data = { userId, projectname, title, link, technology,imagePath };
     // console.log(data);
     let projectDb = await AdminServices().createProject(data);
     res.send({

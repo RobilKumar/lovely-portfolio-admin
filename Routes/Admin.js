@@ -21,6 +21,7 @@ const upload = multer({ storage });
 AdminRouter.post(
   "/add-project",
   AuthenticateToken,
+  upload.single("myFile"),
   AdminController().addProject
 );
 
@@ -47,7 +48,7 @@ AdminRouter.delete(
   AuthenticateToken,
   AdminController().deleteProject
 );
-
+//=============Skillcrud=================================>
 AdminRouter.post("/add-skill", AuthenticateToken, SkillController().AddSkill);
 AdminRouter.get(
   "/getAll-skill",

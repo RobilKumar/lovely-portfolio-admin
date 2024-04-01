@@ -2,7 +2,7 @@ const ProjectSchema = require("../Schema/ProjectSchema");
 
 module.exports = () => {
   const createProject = (req, res) => {
-    const { projectname, link, userId, technology } = req;
+    const { projectname, link, userId, technology,imagePath } = req;
     console.log(req);
 
     new Promise(async (resolve, reject) => {
@@ -12,6 +12,7 @@ module.exports = () => {
           link: link,
           technology: technology,
           userId: userId,
+          imagePath:imagePath
         });
 
         resolve(projectDb);

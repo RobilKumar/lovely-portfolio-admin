@@ -11,10 +11,14 @@ const projectSchema = new Schema({
     default: null,
   },
 
-  images: {
-    type: String,
-    default: null,
+  imagePath: {
+    type: String, // Store image data as binary data
+    required: true,
   },
+  // contentType: {
+  //   type: String, // Specify the content type (e.g., image/jpeg, image/png)
+  //   required: true
+  // },
 
   link: {
     type: String,
